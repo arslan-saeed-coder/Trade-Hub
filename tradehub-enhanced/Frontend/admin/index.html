@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — TradeHub PK</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+<div class="admin-bg">
+  <div class="grid-lines"></div>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+</div>
+<div id="particles"></div>
+<div class="overlay" id="overlay"></div>
+<div class="toast-stack" id="toastStack"></div>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="sidebar-top-glow"></div>
+    <div class="sidebar-logo">TRADEHUB</div>
+    <div class="sidebar-label">Main</div>
+    <div class="sidebar-item active" onclick="showPage('dashboard',this)"><span class="icon">📊</span> Dashboard</div>
+    <div class="sidebar-label">Management</div>
+    <div class="sidebar-item" onclick="showPage('suppliers',this)"><span class="icon">🏭</span> Suppliers <span id="pending-badge" style="margin-left:auto;background:rgba(251,191,36,.2);color:#fbbf24;padding:2px 8px;border-radius:100px;font-size:.7rem;">3</span></div>
+    <div class="sidebar-item" onclick="showPage('products',this)"><span class="icon">📦</span> Products</div>
+    <div class="sidebar-item" onclick="showPage('categories',this)"><span class="icon">🏷️</span> Categories</div>
+    <div class="sidebar-item" onclick="showPage('buyers',this)"><span class="icon">👥</span> Buyers</div>
+    <div class="sidebar-label">System</div>
+    <div class="sidebar-item" onclick="window.location.href='../index.html'"><span class="icon">🌐</span> View Site</div>
+    <div class="sidebar-item" onclick="adminLogout()"><span class="icon">🚪</span> Logout</div>
+    <div class="sidebar-bottom">
+      <div class="admin-tag">
+        <div class="admin-avatar">A</div>
+        <div class="admin-info">
+          <div class="admin-name">Admin</div>
+          <div class="admin-role">Super Admin</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <span class="topbar-title" id="topbarTitle">Dashboard</span>
+      <div class="topbar-spacer"></div>
+      <span class="topbar-date" id="topbarDate"></span>
+      <span class="topbar-badge">● Live</span>
+    </div>
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div class="page-section active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-box green"><div class="stat-label">Total Suppliers</div><div class="stat-value green" id="stat-total">8</div><div class="stat-sub">+2 this week</div></div>
+          <div class="stat-box blue"><div class="stat-label">Pending Approval</div><div class="stat-value blue" id="stat-pending">3</div><div class="stat-sub">Awaiting review</div></div>
+          <div class="stat-box purple"><div class="stat-label">Total Products</div><div class="stat-value purple">247</div><div class="stat-sub">Active listings</div></div>
+          <div class="stat-box pink"><div class="stat-label">Inquiries Today</div><div class="stat-value pink">18</div><div class="stat-sub">Buyer requests</div></div>
+        </div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <span class="table-card-title">Recent Supplier Applications</span>
+            <button class="btn-approve" onclick="showPage('suppliers',document.querySelectorAll('.sidebar-item')[4])">View All →</button>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>Business</th><th>Category</th><th>City</th><th>Submitted</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>Noor Fabrics</td><td>Textiles</td><td>Lahore</td><td>Today</td><td><span class="pill pill-pending">Pending</span></td></tr>
+                <tr><td>Alpha Metals</td><td>Hardware</td><td>Gujranwala</td><td>Yesterday</td><td><span class="pill pill-pending">Pending</span></td></tr>
+                <tr><td>Green Valley Co.</td><td>Agriculture</td><td>Multan</td><td>24 Jun</td><td><span class="pill pill-approved">Approved</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPPLIERS -->
+      <div class="page-section" id="page-suppliers">
+        <div class="sec-title">Supplier Management <span class="accent">/ Approve &amp; Review</span></div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <span class="table-card-title">All Supplier Applications</span>
+            <input type="text" class="table-search" placeholder="Search suppliers..." oninput="searchTable('suppTable',this.value)">
+          </div>
+          <div class="table-scroll">
+            <table id="suppTable">
+              <thead><tr><th>Business</th><th>Category</th><th>City</th><th>Contact</th><th>MOQ</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Noor Fabrics</strong></td><td>Textiles</td><td>Lahore</td><td>0300-1234567</td><td>200 m</td><td><span class="pill pill-pending">Pending</span></td><td><div class="actions-cell"><button class="btn-approve" onclick="approveSupplier(this)">✓ Approve</button><button class="btn-reject" onclick="rejectSupplier(this)">✕ Reject</button><button class="btn-delete" onclick="deleteRow(this)">🗑</button></div></td></tr>
+                <tr><td><strong>Alpha Metals</strong></td><td>Hardware</td><td>Gujranwala</td><td>0311-9876543</td><td>50 kg</td><td><span class="pill pill-pending">Pending</span></td><td><div class="actions-cell"><button class="btn-approve" onclick="approveSupplier(this)">✓ Approve</button><button class="btn-reject" onclick="rejectSupplier(this)">✕ Reject</button><button class="btn-delete" onclick="deleteRow(this)">🗑</button></div></td></tr>
+                <tr><td><strong>Delta Chemicals</strong></td><td>Chemicals</td><td>Karachi</td><td>0321-5556666</td><td>100 kg</td><td><span class="pill pill-pending">Pending</span></td><td><div class="actions-cell"><button class="btn-approve" onclick="approveSupplier(this)">✓ Approve</button><button class="btn-reject" onclick="rejectSupplier(this)">✕ Reject</button><button class="btn-delete" onclick="deleteRow(this)">🗑</button></div></td></tr>
+                <tr><td><strong>Al-Hamza Textiles</strong></td><td>Textiles</td><td>Faisalabad</td><td>0300-0000001</td><td>500 m</td><td><span class="pill pill-approved">Approved</span></td><td><div class="actions-cell"><span style="color:var(--neon-green);font-size:.8rem;font-weight:600;">✓ Approved</span><button class="btn-delete" onclick="deleteRow(this)">🗑</button></div></td></tr>
+                <tr><td><strong>Pak Steel Works</strong></td><td>Hardware</td><td>Lahore</td><td>0300-0000002</td><td>100 kg</td><td><span class="pill pill-approved">Approved</span></td><td><div class="actions-cell"><span style="color:var(--neon-green);font-size:.8rem;font-weight:600;">✓ Approved</span><button class="btn-delete" onclick="deleteRow(this)">🗑</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="page-section" id="page-products">
+        <div class="sec-title">Product Listings <span class="accent">/ Remove Spam</span></div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <span class="table-card-title">All Products</span>
+            <input type="text" class="table-search" placeholder="Search products..." oninput="searchTable('prodTable',this.value)">
+          </div>
+          <div class="table-scroll">
+            <table id="prodTable">
+              <thead><tr><th>Product</th><th>Supplier</th><th>Category</th><th>Price</th><th>MOQ</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Basmati Rice Premium</td><td>Punjab Rice Mills</td><td>Food &amp; Grain</td><td>PKR 2,800</td><td>5 Ton</td><td><span class="pill pill-approved">Active</span></td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>Cotton Fabric Plain</td><td>Al-Hamza Textiles</td><td>Textiles</td><td>PKR 180/m</td><td>500 m</td><td><span class="pill pill-approved">Active</span></td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>FAKE Rolex Watches</td><td>Unknown Seller</td><td>Other</td><td>PKR 500</td><td>1 pc</td><td><span class="pill pill-rejected">Spam</span></td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>MS Steel Bars 12mm</td><td>Pak Steel Works</td><td>Hardware</td><td>PKR 1,950</td><td>100 kg</td><td><span class="pill pill-approved">Active</span></td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>Football Match Grade</td><td>Sialkot Sports Co.</td><td>Sports</td><td>PKR 450</td><td>50 pcs</td><td><span class="pill pill-approved">Active</span></td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES -->
+      <div class="page-section" id="page-categories">
+        <div class="sec-title">Category Manager <span class="accent">/ Add &amp; Remove</span></div>
+        <div class="table-card" style="padding:24px">
+          <div class="cat-add-row">
+            <input type="text" class="cat-input" id="catInput" placeholder="New category name...">
+            <button class="btn-add-cat" onclick="addCategory()">+ Add Category</button>
+          </div>
+          <div class="cat-mgr-grid" id="catGrid">
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">👕 Textiles</div><div class="cat-mgr-count">4,200 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">📱 Electronics</div><div class="cat-mgr-count">2,800 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">🌾 Agriculture</div><div class="cat-mgr-count">1,900 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">🧪 Chemicals</div><div class="cat-mgr-count">980 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">🍚 Food &amp; Grain</div><div class="cat-mgr-count">2,100 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">🔧 Hardware</div><div class="cat-mgr-count">3,400 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">👜 Leather</div><div class="cat-mgr-count">760 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+            <div class="cat-mgr-item"><div><div class="cat-mgr-name">⚽ Sports</div><div class="cat-mgr-count">1,200 products</div></div><button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUYERS -->
+      <div class="page-section" id="page-buyers">
+        <div class="sec-title">Registered Buyers <span class="accent">/ User Management</span></div>
+        <div class="table-card">
+          <div class="table-card-header">
+            <span class="table-card-title">All Buyers</span>
+            <input type="text" class="table-search" placeholder="Search buyers..." oninput="searchTable('buyerTable',this.value)">
+          </div>
+          <div class="table-scroll">
+            <table id="buyerTable">
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Joined</th><th>Inquiries</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Ahmad Raza</td><td>ahmad@email.com</td><td>0300-1234567</td><td>Jan 2026</td><td>12</td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>Zara Traders</td><td>zara@email.com</td><td>0311-9876543</td><td>Mar 2026</td><td>8</td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+                <tr><td>Hassan &amp; Sons</td><td>hassan@email.com</td><td>0321-5556666</td><td>Apr 2026</td><td>5</td><td><div class="actions-cell"><button class="btn-delete" onclick="deleteRow(this)">🗑 Remove</button></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supplier Dashboard — TradeHub PK</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+body{background:var(--gray-50);}
+.dash-layout{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 64px);}
+.dash-sidebar{background:white;border-right:1px solid var(--gray-200);padding:24px 0;position:sticky;top:68px;height:calc(100vh - 64px);overflow-y:auto;}
+.dash-nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--gray-700);border-left:3px solid transparent;transition:all .15s;text-decoration:none;}
+.dash-nav-item:hover{color:var(--green);background:var(--gray-50);}
+.dash-nav-item.active{color:var(--green);border-left-color:var(--green);background:#f0fdf4;}
+.dash-main{padding:32px;}
+.dash-section{display:none;}
+.dash-section.active{display:block;}
+.dash-welcome{margin-bottom:28px;}
+.dash-welcome h2{font-size:1.5rem;font-weight:800;}
+.dash-welcome p{color:var(--gray-500);margin-top:4px;}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:32px;}
+.stat-card{background:white;border-radius:14px;padding:20px;border:1.5px solid var(--gray-200);}
+.stat-card .stat-label{font-size:.8rem;color:var(--gray-500);font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.stat-card .stat-val{font-size:2rem;font-weight:900;color:var(--gray-900);margin-top:6px;}
+.stat-card .stat-sub{font-size:.8rem;color:var(--green);margin-top:4px;font-weight:600;}
+.card{background:white;border-radius:14px;padding:24px;border:1.5px solid var(--gray-200);margin-bottom:20px;}
+.card h3{font-size:1rem;font-weight:800;margin-bottom:16px;}
+.pending-badge{background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:700;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:10px 12px;font-size:.8rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--gray-200);}
+td{padding:12px;font-size:.875rem;border-bottom:1px solid var(--gray-100);}
+.btn-sm{padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:700;cursor:pointer;border:none;}
+.btn-sm-green{background:var(--green);color:white;}
+.btn-sm-red{background:#fee2e2;color:#dc2626;}
+@media(max-width:768px){.dash-layout{grid-template-columns:1fr;}.dash-sidebar{display:none;}}
+</style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">Trade<span>Hub</span> PK</a>
+    <div style="flex:1"></div>
+    <div class="nav-actions">
+      <span id="supplierName" style="font-weight:600;color:var(--gray-700);font-size:.9rem"></span>
+      <button class="btn-login" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-layout">
+  <aside class="dash-sidebar">
+    <a class="dash-nav-item active" onclick="showSection('overview',this)">📊 Overview</a>
+    <a class="dash-nav-item" onclick="showSection('profile',this)">🏢 Company Profile</a>
+    <a class="dash-nav-item" onclick="showSection('products',this)">📦 My Products</a>
+    <a class="dash-nav-item" onclick="showSection('inquiries',this)">💬 Inquiries</a>
+  </aside>
+  <main class="dash-main">
+    <!-- OVERVIEW -->
+    <div class="dash-section active" id="sec-overview">
+      <div class="dash-welcome">
+        <h2>Welcome, <span id="dashName">Supplier</span>!</h2>
+        <p>Your supplier dashboard — manage products, view inquiries, and track performance.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-label">Products Listed</div><div class="stat-val" id="statProds">0</div><div class="stat-sub">Active listings</div></div>
+        <div class="stat-card"><div class="stat-label">Total Inquiries</div><div class="stat-val">4</div><div class="stat-sub">This month</div></div>
+        <div class="stat-card"><div class="stat-label">Profile Views</div><div class="stat-val">127</div><div class="stat-sub">Last 30 days</div></div>
+        <div class="stat-card"><div class="stat-label">Account Status</div><div class="stat-val" style="font-size:1.1rem;margin-top:10px"><span class="pending-badge" id="statusBadge">Pending</span></div></div>
+      </div>
+      <div class="card">
+        <h3>Recent Inquiries</h3>
+        <table>
+          <thead><tr><th>Buyer</th><th>Product</th><th>Quantity</th><th>Date</th></tr></thead>
+          <tbody>
+            <tr><td>Ahmad Raza</td><td>Cotton Fabric</td><td>500 meters</td><td>25 Jun 2026</td></tr>
+            <tr><td>Zara Traders</td><td>Polyester Yarn</td><td>2 Ton</td><td>24 Jun 2026</td></tr>
+            <tr><td>Hassan &amp; Sons</td><td>Denim Fabric</td><td>300 meters</td><td>22 Jun 2026</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- PROFILE -->
+    <div class="dash-section" id="sec-profile">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">Company Profile</h2>
+      <div class="card">
+        <h3>Edit Business Info</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group"><label>Business Name</label><input type="text" id="pBizName" placeholder="Your company name"></div>
+          <div class="form-group"><label>Category</label><select id="pCat"><option>Textiles</option><option>Hardware</option><option>Agriculture</option><option>Sports</option><option>Food &amp; Grain</option></select></div>
+          <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="Lahore"></div>
+          <div class="form-group"><label>MOQ</label><input type="text" id="pMoq" placeholder="500 meters"></div>
+          <div class="form-group"><label>WhatsApp</label><input type="tel" id="pWa" placeholder="03001234567"></div>
+          <div class="form-group"><label>Website</label><input type="url" id="pWeb" placeholder="https://..."></div>
+        </div>
+        <div class="form-group" style="margin-top:8px"><label>Business Description</label><textarea rows="4" id="pDesc" placeholder="Describe your business, products, and specializations..."></textarea></div>
+        <button class="btn-submit" onclick="saveProfile()" style="max-width:200px;margin-top:8px">Save Profile</button>
+      </div>
+    </div>
+    <!-- PRODUCTS -->
+    <div class="dash-section" id="sec-products">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px">
+        <h2 style="font-size:1.5rem;font-weight:800">My Products</h2>
+        <button class="btn-register" onclick="document.getElementById('addProdForm').style.display='block'">+ Add Product</button>
+      </div>
+      <div class="card" id="addProdForm" style="display:none">
+        <h3>Add New Product</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group"><label>Product Name *</label><input type="text" id="npName" placeholder="Cotton Fabric Plain"></div>
+          <div class="form-group"><label>Wholesale Price *</label><input type="text" id="npPrice" placeholder="PKR 180/meter"></div>
+          <div class="form-group"><label>Category</label><select id="npCat"><option>Textiles</option><option>Hardware</option><option>Agriculture</option><option>Sports</option></select></div>
+          <div class="form-group"><label>MOQ</label><input type="text" id="npMoq" placeholder="Min 500 meters"></div>
+        </div>
+        <div class="form-group"><label>Description</label><textarea rows="3" id="npDesc" placeholder="Product details, specifications..."></textarea></div>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <button class="btn-submit" onclick="addProduct()" style="max-width:160px">Add Product</button>
+          <button onclick="document.getElementById('addProdForm').style.display='none'" style="padding:12px 20px;border:1.5px solid var(--gray-200);border-radius:10px;cursor:pointer;font-weight:600;background:none">Cancel</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Listed Products</h3>
+        <div id="prodTable"><p style="color:var(--gray-500)">No products listed yet. Add your first product above.</p></div>
+      </div>
+    </div>
+    <!-- INQUIRIES -->
+    <div class="dash-section" id="sec-inquiries">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">Buyer Inquiries</h2>
+      <div class="card">
+        <h3>All Inquiries</h3>
+        <table>
+          <thead><tr><th>Buyer</th><th>Phone</th><th>Product</th><th>Quantity</th><th>Date</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td>Ahmad Raza</td><td>0300-1234567</td><td>Cotton Fabric</td><td>500 m</td><td>25 Jun</td><td><a href="https://wa.me/923001234567" target="_blank" class="btn-sm btn-sm-green">WhatsApp</a></td></tr>
+            <tr><td>Zara Traders</td><td>0311-9876543</td><td>Polyester Yarn</td><td>2 Ton</td><td>24 Jun</td><td><a href="https://wa.me/923119876543" target="_blank" class="btn-sm btn-sm-green">WhatsApp</a></td></tr>
+            <tr><td>Hassan &amp; Sons</td><td>0321-5556666</td><td>Denim Fabric</td><td>300 m</td><td>22 Jun</td><td><a href="https://wa.me/923215556666" target="_blank" class="btn-sm btn-sm-green">WhatsApp</a></td></tr>
+            <tr><td>Bilal Import</td><td>0333-7778888</td><td>Cotton Fabric</td><td>1000 m</td><td>20 Jun</td><td><a href="https://wa.me/923337778888" target="_blank" class="btn-sm btn-sm-green">WhatsApp</a></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-stack" id="toastStack"></div>
+<script>
+function showSection(id,el){
+  document.querySelectorAll(".dash-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".dash-nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("sec-"+id).classList.add("active");
+  el.classList.add("active");
+}
+function showToast(msg,type="success"){
+  const stack=document.getElementById("toastStack");
+  const t=document.createElement("div");
+  t.className=`toast toast-${type}`;
+  t.textContent=msg;
+  stack.appendChild(t);
+  setTimeout(()=>t.remove(),3100);
+}
+let products=[];
+function addProduct(){
+  const name=document.getElementById("npName").value.trim();
+  const price=document.getElementById("npPrice").value.trim();
+  if(!name||!price){showToast("Product name and price required.","error");return;}
+  const p={id:Date.now(),name,price,category:document.getElementById("npCat").value,moq:document.getElementById("npMoq").value,desc:document.getElementById("npDesc").value};
+  products.push(p);
+  saveDashData();
+  renderProducts();
+  document.getElementById("addProdForm").style.display="none";
+  ["npName","npPrice","npMoq","npDesc"].forEach(id=>document.getElementById(id).value="");
+  showToast(`"${name}" added successfully!`,"success");
+}
+function removeProduct(id){
+  products=products.filter(p=>p.id!==id);
+  saveDashData();
+  renderProducts();
+  showToast("Product removed.","info");
+}
+function renderProducts(){
+  const container=document.getElementById("prodTable");
+  document.getElementById("statProds").textContent=products.length;
+  if(!products.length){container.innerHTML="<p style=\"color:var(--gray-500)\">No products listed yet.</p>";return;}
+  container.innerHTML=`<table><thead><tr><th>Product</th><th>Price</th><th>Category</th><th>MOQ</th><th>Actions</th></tr></thead><tbody>${products.map(p=>`<tr><td>${p.name}</td><td>${p.price}</td><td>${p.category}</td><td>${p.moq||"—"}</td><td><button class="btn-sm btn-sm-red" onclick="removeProduct(${p.id})">Remove</button></td></tr>`).join("")}</tbody></table>`;
+}
+function saveProfile(){showToast("Profile saved!","success");}
+function saveDashData(){
+  const data=JSON.parse(localStorage.getItem("th_supplier_session")||"{}");
+  data.products=products;
+  localStorage.setItem("th_supplier_session",JSON.stringify(data));
+}
+function logout(){localStorage.removeItem("th_supplier_session");window.location.href="../index.html";}
+document.addEventListener("DOMContentLoaded",()=>{
+  const s=JSON.parse(localStorage.getItem("th_supplier_session")||"null");
+  if(!s){window.location.href="supplier-register.html";return;}
+  document.getElementById("dashName").textContent=s.name||s.bizName||"Supplier";
+  document.getElementById("supplierName").textContent=s.bizName||s.name||"";
+  if(s.products){products=s.products;renderProducts();}
+  if(s.bizName)document.getElementById("pBizName").value=s.bizName;
+  if(s.city)document.getElementById("pCity").value=s.city;
+  if(s.moq)document.getElementById("pMoq").value=s.moq;
+  if(s.wa)document.getElementById("pWa").value=s.wa;
+  if(s.web)document.getElementById("pWeb").value=s.web;
+});
+</script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

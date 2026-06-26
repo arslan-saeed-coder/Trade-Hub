@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suppliers — TradeHub PK</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">Trade<span>Hub</span> PK</a>
+    <ul class="nav-links">
+      <li><a href="suppliers.html" class="active-nav">Suppliers</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a>
+      <a href="supplier-register.html" class="btn-register">Join as Supplier</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="suppliers.html">Suppliers</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="about.html">About</a>
+    <div class="mobile-actions">
+      <a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a>
+      <a href="supplier-register.html" class="btn-register" style="flex:1;text-align:center;">Join as Supplier</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="ph-inner">
+    <h1>Verified Suppliers Directory</h1>
+    <p>Browse 2,400+ verified B2B suppliers across Pakistan</p>
+  </div>
+</div>
+
+<div class="filters-bar">
+  <div class="filters-inner">
+    <input type="text" class="filter-search" id="searchFilter" placeholder="Search suppliers…" oninput="filterSuppliers()">
+    <select class="filter-select" id="catFilter" onchange="filterSuppliers()">
+      <option value="">All Categories</option>
+      <option>Textiles</option><option>Hardware</option><option>Agriculture</option>
+      <option>Sports</option><option>Leather</option><option>Food &amp; Grain</option>
+      <option>Electronics</option><option>Chemicals</option>
+    </select>
+    <select class="filter-select" id="cityFilter" onchange="filterSuppliers()">
+      <option value="">All Cities</option>
+      <option>Lahore</option><option>Karachi</option><option>Faisalabad</option>
+      <option>Sialkot</option><option>Multan</option><option>Sheikhupura</option>
+    </select>
+    <span class="results-count" id="resultsCount">Showing 8 suppliers</span>
+  </div>
+</div>
+
+<div class="suppliers-page">
+  <div class="suppliers-grid" id="suppliersGrid"></div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+const SUPPLIERS=[
+  {id:1,name:"Al-Hamza Textiles",initial:"AH",category:"Textiles",location:"Faisalabad",moq:"500 meters",wa:"923001234567",verified:true},
+  {id:2,name:"Pak Steel Works",initial:"PS",category:"Hardware",location:"Lahore",moq:"100 kg",wa:"923011234567",verified:true},
+  {id:3,name:"Green Farm Exports",initial:"GF",category:"Agriculture",location:"Multan",moq:"1 Ton",wa:"923021234567",verified:true},
+  {id:4,name:"Sialkot Sports Co.",initial:"SS",category:"Sports",location:"Sialkot",moq:"50 pcs",wa:"923031234567",verified:true},
+  {id:5,name:"Karachi Leather House",initial:"KL",category:"Leather",location:"Karachi",moq:"200 pcs",wa:"923041234567",verified:false},
+  {id:6,name:"Punjab Rice Mills",initial:"PR",category:"Food & Grain",location:"Sheikhupura",moq:"5 Ton",wa:"923051234567",verified:true},
+  {id:7,name:"Lahore Electronics Hub",initial:"LE",category:"Electronics",location:"Lahore",moq:"10 units",wa:"923061234567",verified:true},
+  {id:8,name:"Rawalpindi Chemicals",initial:"RC",category:"Chemicals",location:"Rawalpindi",moq:"50 kg",wa:"923071234567",verified:false},
+];
+function filterSuppliers(){
+  const q=document.getElementById("searchFilter").value.toLowerCase();
+  const cat=document.getElementById("catFilter").value;
+  const city=document.getElementById("cityFilter").value;
+  const filtered=SUPPLIERS.filter(s=>(!q||s.name.toLowerCase().includes(q)||s.category.toLowerCase().includes(q))&&(!cat||s.category===cat)&&(!city||s.location===city));
+  renderSuppliers(filtered);
+}
+function renderSuppliers(list){
+  const grid=document.getElementById("suppliersGrid");
+  document.getElementById("resultsCount").textContent=`Showing ${list.length} supplier${list.length!==1?"s":""}`;
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No suppliers found</div><div class="empty-text">Try adjusting your filters or search terms.</div></div>`;
+    return;
+  }
+  grid.innerHTML=list.map((s,i)=>`
+    <div class="supplier-card" style="animation-delay:${i*0.07}s">
+      <div class="supplier-card-top">
+        <div class="supplier-logo">${s.initial}</div>
+        <div>
+          <div class="supplier-name">${s.name}</div>
+          <span class="supplier-category">${s.category}</span>
+        </div>
+      </div>
+      <div class="supplier-meta">
+        <div class="supplier-meta-row"><span class="meta-icon">📍</span>${s.location}</div>
+        <div class="supplier-meta-row"><span class="meta-icon">📦</span>MOQ: ${s.moq}</div>
+        <div class="supplier-meta-row">
+          ${s.verified
+            ? '<span class="verified-badge">✓ Verified Supplier</span>'
+            : '<span class="pending-badge-sm">⏳ Pending Verification</span>'}
+        </div>
+      </div>
+      <div class="supplier-actions">
+        <a href="supplier-detail.html?id=${s.id}" class="btn-contact">View Profile</a>
+        <a href="https://wa.me/${s.wa}" target="_blank" class="btn-wa">💬</a>
+      </div>
+    </div>
+  `).join("");
+  // stagger animation
+  setTimeout(()=>{
+    grid.querySelectorAll('.supplier-card').forEach((c,i)=>{
+      c.style.opacity='0'; c.style.transform='translateY(16px)';
+      c.style.transition=`opacity .35s ease ${i*.07}s, transform .35s ease ${i*.07}s`;
+      setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; }, 30+i*70);
+    });
+  }, 10);
+}
+document.addEventListener("DOMContentLoaded",()=>renderSuppliers(SUPPLIERS));
+</script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/shared-auth.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

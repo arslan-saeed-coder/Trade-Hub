@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — TradeHub PK</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">Trade<span>Hub</span> PK</a>
+    <ul class="nav-links">
+      <li><a href="suppliers.html">Suppliers</a></li>
+      <li><a href="products.html" class="active-nav">Products</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a>
+      <a href="supplier-register.html" class="btn-register">Join as Supplier</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="suppliers.html">Suppliers</a>
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="about.html">About</a>
+    <div class="mobile-actions">
+      <a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a>
+      <a href="supplier-register.html" class="btn-register" style="flex:1;text-align:center;">Join as Supplier</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="ph-inner">
+    <h1>Product Listings</h1>
+    <p>18,000+ wholesale products from verified Pakistani suppliers</p>
+  </div>
+</div>
+
+<div class="filters-bar">
+  <div class="filters-inner">
+    <input type="text" class="filter-search" id="searchFilter" placeholder="Search products…" oninput="filterProducts()">
+    <select class="filter-select" id="catFilter" onchange="filterProducts()">
+      <option value="">All Categories</option>
+      <option>Textiles</option><option>Hardware</option><option>Agriculture</option>
+      <option>Sports</option><option>Leather</option><option>Food &amp; Grain</option>
+    </select>
+    <select class="filter-select" id="sortFilter" onchange="filterProducts()">
+      <option value="">Sort: Default</option>
+      <option value="name">Name A-Z</option>
+    </select>
+    <span class="results-count" id="resultsCount">Loading…</span>
+  </div>
+</div>
+
+<div class="products-page">
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<!-- Inquiry Modal -->
+<div class="inq-modal" id="inqModal">
+  <div class="inq-box">
+    <h3>Send Inquiry</h3>
+    <p style="font-size:.875rem;color:var(--gray-500);margin-bottom:20px">Product: <strong id="inqProduct"></strong></p>
+    <div class="form-group"><label>Your Name</label><input type="text" id="inqName" placeholder="Muhammad Ali"></div>
+    <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="inqPhone" placeholder="03001234567"></div>
+    <div class="form-group"><label>Quantity Required</label><input type="text" id="inqQty" placeholder="e.g. 5 Ton or 200 pieces"></div>
+    <div class="form-group"><label>Message (optional)</label><textarea id="inqMsg" rows="3" placeholder="Any specific requirements…"></textarea></div>
+    <button class="btn-submit" onclick="submitInquiry()">Send Inquiry</button>
+    <button onclick="closeInquiry()" style="width:100%;margin-top:10px;padding:12px;border:none;background:none;color:var(--gray-500);cursor:pointer;font-weight:600;border-radius:11px;transition:background .2s" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='none'">Cancel</button>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/shared-auth.js"></script>
+<script>
+const PRODUCTS=[
+  {id:1,name:"Basmati Rice Premium Grade",emoji:"🍚",price:"PKR 2,800",unit:"/50kg bag",supplier:"Punjab Rice Mills",category:"Food & Grain",moq:"Min 5 Ton"},
+  {id:2,name:"Cotton Fabric (Plain Weave)",emoji:"👕",price:"PKR 180",unit:"/meter",supplier:"Al-Hamza Textiles",category:"Textiles",moq:"Min 500 m"},
+  {id:3,name:"MS Steel Bars 12mm",emoji:"🔩",price:"PKR 1,950",unit:"/kg",supplier:"Pak Steel Works",category:"Hardware",moq:"Min 100 kg"},
+  {id:4,name:"Football (Match Grade)",emoji:"⚽",price:"PKR 450",unit:"/piece",supplier:"Sialkot Sports Co.",category:"Sports",moq:"Min 50 pcs"},
+  {id:5,name:"Leather Wallet (Handmade)",emoji:"👜",price:"PKR 320",unit:"/piece",supplier:"Karachi Leather House",category:"Leather",moq:"Min 200 pcs"},
+  {id:6,name:"Wheat Flour (Grade A)",emoji:"🌾",price:"PKR 1,100",unit:"/40kg bag",supplier:"Green Farm Exports",category:"Agriculture",moq:"Min 1 Ton"},
+  {id:7,name:"PVC Pipe 2-inch",emoji:"🔧",price:"PKR 850",unit:"/length",supplier:"Pak Steel Works",category:"Hardware",moq:"Min 200 pcs"},
+  {id:8,name:"Polyester Yarn 30/1",emoji:"🧵",price:"PKR 950",unit:"/kg",supplier:"Al-Hamza Textiles",category:"Textiles",moq:"Min 1 Ton"},
+  {id:9,name:"Cricket Bat (English Willow)",emoji:"🏏",price:"PKR 2,200",unit:"/piece",supplier:"Sialkot Sports Co.",category:"Sports",moq:"Min 20 pcs"},
+  {id:10,name:"Mango (Sindhri Export)",emoji:"🥭",price:"PKR 280",unit:"/kg",supplier:"Green Farm Exports",category:"Agriculture",moq:"Min 500 kg"},
+  {id:11,name:"Steel Angle Bar",emoji:"⚙️",price:"PKR 1,750",unit:"/kg",supplier:"Pak Steel Works",category:"Hardware",moq:"Min 50 kg"},
+  {id:12,name:"Denim Fabric",emoji:"👖",price:"PKR 340",unit:"/meter",supplier:"Al-Hamza Textiles",category:"Textiles",moq:"Min 200 m"},
+];
+let currentProduct="";
+function filterProducts(){
+  const q=document.getElementById("searchFilter").value.toLowerCase();
+  const cat=document.getElementById("catFilter").value;
+  const sort=document.getElementById("sortFilter").value;
+  let filtered=PRODUCTS.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.supplier.toLowerCase().includes(q))&&(!cat||p.category===cat));
+  if(sort==="name")filtered.sort((a,b)=>a.name.localeCompare(b.name));
+  renderProducts(filtered);
+}
+function renderProducts(list){
+  const grid=document.getElementById("productsGrid");
+  document.getElementById("resultsCount").textContent=`Showing ${list.length} products`;
+  if(!list.length){
+    grid.innerHTML=`<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products found</div><div class="empty-text">Try adjusting your filters or search terms.</div></div>`;
+    return;
+  }
+  grid.innerHTML=list.map(p=>`
+    <div class="product-card">
+      <div class="product-img">${p.emoji}</div>
+      <div class="product-body">
+        <div class="product-price">${p.price} <small>${p.unit}</small></div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-supplier">by ${p.supplier}</div>
+        <div class="product-moq">${p.moq}</div>
+        <button class="btn-inquiry" onclick="openInquiry(this)" data-name="${p.name.replace(/"/g,'&quot;')}">Send Inquiry</button>
+      </div>
+    </div>
+  `).join("");
+  // stagger
+  setTimeout(()=>{
+    grid.querySelectorAll('.product-card').forEach((c,i)=>{
+      c.style.opacity='0'; c.style.transform='translateY(14px)';
+      c.style.transition=`opacity .3s ease ${i*.05}s, transform .3s ease ${i*.05}s`;
+      setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; }, 20+i*50);
+    });
+  },10);
+}
+function openInquiry(el){
+  const name=typeof el==="string"?el:el.getAttribute("data-name");
+  currentProduct=name;
+  document.getElementById("inqProduct").textContent=name;
+  document.getElementById("inqModal").classList.add("show");
+}
+function closeInquiry(){document.getElementById("inqModal").classList.remove("show");}
+function submitInquiry(){
+  const name=document.getElementById("inqName").value.trim();
+  const phone=document.getElementById("inqPhone").value.trim();
+  const qty=document.getElementById("inqQty").value.trim();
+  if(!name||!phone||!qty){showToast("Please fill required fields.","error");return;}
+  closeInquiry();
+  showToast(`Inquiry sent for "${currentProduct}"! Supplier will contact you soon.`,"success");
+}
+function showToast(msg,type="success"){
+  const stack=document.getElementById("toastStack");
+  const t=document.createElement("div");
+  t.className=`toast toast-${type}`;
+  t.textContent=msg;
+  stack.appendChild(t);
+  setTimeout(()=>t.remove(),3100);
+}
+document.addEventListener("DOMContentLoaded",()=>{
+  const params=new URLSearchParams(window.location.search);
+  const q=params.get("q");
+  const cat=params.get("cat");
+  if(q)document.getElementById("searchFilter").value=q;
+  const CAT_MAP={"textiles":"Textiles","electronics":"Electronics","agriculture":"Agriculture","chemicals":"Chemicals","food":"Food & Grain","hardware":"Hardware","leather":"Leather","sports":"Sports"};
+  if(cat)document.getElementById("catFilter").value=CAT_MAP[cat.toLowerCase()]||cat.charAt(0).toUpperCase()+cat.slice(1);
+  filterProducts();
+  document.getElementById("inqModal").addEventListener("click",function(e){if(e.target===this)closeInquiry();});
+});
+</script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

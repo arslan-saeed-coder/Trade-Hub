@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — TradeHub PK</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+body{background:var(--gray-50);}
+.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px);}
+.dash-sidebar{background:white;border-right:1px solid var(--gray-200);padding:24px 0;position:sticky;top:68px;height:calc(100vh - 64px);}
+.dash-nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--gray-700);border-left:3px solid transparent;transition:all .15s;text-decoration:none;}
+.dash-nav-item:hover{color:var(--green);background:var(--gray-50);}
+.dash-nav-item.active{color:var(--green);border-left-color:var(--green);background:#f0fdf4;}
+.dash-main{padding:32px;}
+.dash-section{display:none;}
+.dash-section.active{display:block;}
+.card{background:white;border-radius:14px;padding:24px;border:1.5px solid var(--gray-200);margin-bottom:20px;}
+.card h3{font-size:1rem;font-weight:800;margin-bottom:16px;}
+.saved-list{display:flex;flex-direction:column;gap:12px;}
+.saved-item{display:flex;align-items:center;gap:14px;padding:14px;border:1.5px solid var(--gray-200);border-radius:12px;}
+.saved-logo{width:44px;height:44px;border-radius:10px;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green-dark);font-size:1rem;flex-shrink:0;}
+.saved-info{flex:1;}
+.saved-name{font-weight:700;font-size:.9rem;}
+.saved-cat{font-size:.8rem;color:var(--gray-500);}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:10px 12px;font-size:.8rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--gray-200);}
+td{padding:12px;font-size:.875rem;border-bottom:1px solid var(--gray-100);}
+.badge-sent{background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:700;}
+@media(max-width:768px){.dash-layout{grid-template-columns:1fr;}.dash-sidebar{display:none;}}
+</style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">Trade<span>Hub</span> PK</a>
+    <div style="flex:1"></div>
+    <div class="nav-actions">
+      <span id="buyerNameNav" style="font-weight:600;color:var(--gray-700);font-size:.9rem"></span>
+      <button class="btn-login" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-layout">
+  <aside class="dash-sidebar">
+    <a class="dash-nav-item active" onclick="showSection('overview',this)">🏠 Overview</a>
+    <a class="dash-nav-item" onclick="showSection('saved',this)">❤️ Saved Suppliers</a>
+    <a class="dash-nav-item" onclick="showSection('inquiries',this)">📩 My Inquiries</a>
+    <a class="dash-nav-item" onclick="showSection('profile',this)">👤 Profile</a>
+  </aside>
+  <main class="dash-main">
+    <!-- OVERVIEW -->
+    <div class="dash-section active" id="sec-overview">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">My Account</h2>
+      <p style="color:var(--gray-500);margin-bottom:28px">Welcome back, <strong id="buyerName"></strong>!</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:28px">
+        <div class="card" style="margin-bottom:0;text-align:center"><div style="font-size:2rem;font-weight:900;color:var(--green)" id="ovSaved">0</div><div style="font-size:.8rem;color:var(--gray-500);font-weight:600;margin-top:4px">Saved Suppliers</div></div>
+        <div class="card" style="margin-bottom:0;text-align:center"><div style="font-size:2rem;font-weight:900;color:var(--indigo)" id="ovInq">0</div><div style="font-size:.8rem;color:var(--gray-500);font-weight:600;margin-top:4px">Inquiries Sent</div></div>
+      </div>
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="products.html" class="btn-register" style="text-decoration:none">Browse Products</a>
+          <a href="suppliers.html" class="btn-login" style="text-decoration:none">Find Suppliers</a>
+        </div>
+      </div>
+    </div>
+    <!-- SAVED -->
+    <div class="dash-section" id="sec-saved">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">Saved Suppliers</h2>
+      <div class="card">
+        <div class="saved-list" id="savedList">
+          <p style="color:var(--gray-500)">No saved suppliers yet. Browse suppliers and save your favorites.</p>
+        </div>
+      </div>
+    </div>
+    <!-- INQUIRIES -->
+    <div class="dash-section" id="sec-inquiries">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">My Inquiries</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Product</th><th>Supplier</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="inqTableBody">
+            <tr><td colspan="4" style="color:var(--gray-500);text-align:center;padding:24px">No inquiries sent yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- PROFILE -->
+    <div class="dash-section" id="sec-profile">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">My Profile</h2>
+      <div class="card">
+        <div class="form-group"><label>Full Name</label><input type="text" id="pName"></div>
+        <div class="form-group"><label>Email</label><input type="email" id="pEmail"></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="pPhone"></div>
+        <div class="form-group"><label>City</label><input type="text" id="pCity" placeholder="Lahore"></div>
+        <button class="btn-submit" onclick="saveProfile()" style="max-width:180px">Save Changes</button>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-stack" id="toastStack"></div>
+<script>
+function showSection(id,el){
+  document.querySelectorAll(".dash-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".dash-nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("sec-"+id).classList.add("active");
+  el.classList.add("active");
+}
+function showToast(msg,type="success"){
+  const stack=document.getElementById("toastStack");
+  const t=document.createElement("div");
+  t.className=`toast toast-${type}`;
+  t.textContent=msg;
+  stack.appendChild(t);
+  setTimeout(()=>t.remove(),3100);
+}
+function saveProfile(){showToast("Profile updated!","success");}
+function logout(){localStorage.removeItem("th_session");window.location.href="../index.html";}
+document.addEventListener("DOMContentLoaded",()=>{
+  const s=JSON.parse(localStorage.getItem("th_session")||"null");
+  if(!s){window.location.href="../index.html";return;}
+  document.getElementById("buyerName").textContent=s.name;
+  document.getElementById("buyerNameNav").textContent=s.name;
+  if(s.name)document.getElementById("pName").value=s.name;
+  if(s.email)document.getElementById("pEmail").value=s.email;
+  if(s.phone)document.getElementById("pPhone").value=s.phone;
+  document.getElementById("ovSaved").textContent=(s.savedSuppliers||[]).length;
+  document.getElementById("ovInq").textContent=(s.inquiries||[]).length;
+});
+</script>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Categories — TradeHub PK</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top">↑</button>
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">Trade<span>Hub</span> PK</a>
+    <ul class="nav-links">
+      <li><a href="suppliers.html">Suppliers</a></li><li><a href="products.html">Products</a></li>
+      <li><a href="categories.html" class="active-nav">Categories</a></li><li><a href="about.html">About</a></li>
+    </ul>
+    <div class="nav-actions"><a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a><a href="supplier-register.html" class="btn-register">Join as Supplier</a></div>
+    <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="suppliers.html">Suppliers</a><a href="products.html">Products</a><a href="categories.html">Categories</a><a href="about.html">About</a>
+    <div class="mobile-actions"><a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a><a href="supplier-register.html" class="btn-register" style="flex:1;text-align:center;">Join as Supplier</a></div>
+  </div>
+</nav>
+<div class="page-header"><div class="ph-inner"><h1>All Categories</h1><p>Explore Pakistan's wholesale market by industry</p></div></div>
+<div class="categories-page">
+  <div class="cat-page-grid">
+    <a href="products.html?cat=textiles" class="cat-page-card reveal reveal-delay-1"><span class="cat-icon">👕</span><div class="cat-name">Textiles</div><div class="cat-count">4,200 products</div><span class="supplier-category">382 suppliers</span></a>
+    <a href="products.html?cat=electronics" class="cat-page-card reveal reveal-delay-2"><span class="cat-icon">📱</span><div class="cat-name">Electronics</div><div class="cat-count">2,800 products</div><span class="supplier-category">214 suppliers</span></a>
+    <a href="products.html?cat=agriculture" class="cat-page-card reveal reveal-delay-3"><span class="cat-icon">🌾</span><div class="cat-name">Agriculture</div><div class="cat-count">1,900 products</div><span class="supplier-category">178 suppliers</span></a>
+    <a href="products.html?cat=chemicals" class="cat-page-card reveal reveal-delay-4"><span class="cat-icon">🧪</span><div class="cat-name">Chemicals</div><div class="cat-count">980 products</div><span class="supplier-category">92 suppliers</span></a>
+    <a href="products.html?cat=food" class="cat-page-card reveal reveal-delay-1"><span class="cat-icon">🍚</span><div class="cat-name">Food &amp; Grain</div><div class="cat-count">2,100 products</div><span class="supplier-category">265 suppliers</span></a>
+    <a href="products.html?cat=hardware" class="cat-page-card reveal reveal-delay-2"><span class="cat-icon">🔧</span><div class="cat-name">Hardware</div><div class="cat-count">3,400 products</div><span class="supplier-category">310 suppliers</span></a>
+    <a href="products.html?cat=leather" class="cat-page-card reveal reveal-delay-3"><span class="cat-icon">👜</span><div class="cat-name">Leather</div><div class="cat-count">760 products</div><span class="supplier-category">74 suppliers</span></a>
+    <a href="products.html?cat=sports" class="cat-page-card reveal reveal-delay-4"><span class="cat-icon">⚽</span><div class="cat-name">Sports</div><div class="cat-count">1,200 products</div><span class="supplier-category">108 suppliers</span></a>
+    <a href="products.html?cat=construction" class="cat-page-card reveal reveal-delay-1"><span class="cat-icon">🏗️</span><div class="cat-name">Construction</div><div class="cat-count">1,560 products</div><span class="supplier-category">143 suppliers</span></a>
+    <a href="products.html?cat=plastics" class="cat-page-card reveal reveal-delay-2"><span class="cat-icon">🧴</span><div class="cat-name">Plastics</div><div class="cat-count">890 products</div><span class="supplier-category">81 suppliers</span></a>
+    <a href="products.html?cat=medical" class="cat-page-card reveal reveal-delay-3"><span class="cat-icon">💊</span><div class="cat-name">Medical</div><div class="cat-count">640 products</div><span class="supplier-category">56 suppliers</span></a>
+    <a href="products.html?cat=packaging" class="cat-page-card reveal reveal-delay-4"><span class="cat-icon">📦</span><div class="cat-name">Packaging</div><div class="cat-count">720 products</div><span class="supplier-category">67 suppliers</span></a>
+  </div>
+</div>
+<footer class="footer"><div class="footer-inner"><div class="footer-top"><div class="footer-brand"><a href="../index.html" class="logo">Trade<span>Hub</span> PK</a><p>Pakistan's most trusted B2B wholesale marketplace.</p></div><div class="footer-col"><h4>Marketplace</h4><ul><li><a href="suppliers.html">Suppliers</a></li><li><a href="products.html">Products</a></li><li><a href="categories.html">Categories</a></li></ul></div><div class="footer-col"><h4>For Suppliers</h4><ul><li><a href="supplier-register.html">Join as Supplier</a></li><li><a href="supplier-dashboard.html">Dashboard</a></li></ul></div><div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div></div><div class="footer-bottom"><p>© 2026 TradeHub PK. All rights reserved. Made with ❤️ in Pakistan.</p><div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div></div></footer>
+<script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/shared-auth.js"></script><script src="../js/nav.js"></script>
+</body>
+</html>
