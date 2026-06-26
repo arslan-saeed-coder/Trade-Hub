@@ -2,7 +2,7 @@
 // Single source of truth for all backend calls.
 // Set VITE_API_URL in Vercel environment variables.
 
-const API_BASE = window.TRADEHUB_API_URL || 'https://your-backend.railway.app';
+const API_BASE = window.TRADEHUB_API_URL || 'https://trade-hub-production.up.railway.app/';
 
 // ---- Token helpers ----
 const getToken  = ()        => localStorage.getItem('th_token');
