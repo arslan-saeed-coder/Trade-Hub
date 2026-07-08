@@ -1,130 +1,19 @@
-// ===== TRADEHUB PK — ADMIN PANEL JS =====
-
-function spawnParticles() {
-  const container = document.getElementById('particles');
-  if (!container) return;
-  const colors = ['#00ff88','#00e5ff','#a855f7','#ff0080','#ff6600','#ffd700'];
-  for (let i = 0; i < 35; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 3 + 1;
-    p.style.cssText = `
-      left:${Math.random()*100}%;
-      width:${size}px; height:${size}px;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*12+8}s;
-      animation-delay:${Math.random()*10}s;
-      box-shadow:0 0 6px currentColor;
-    `;
-    container.appendChild(p);
-  }
-}
-
-function showPage(id, el) {
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if (el) el.classList.add('active');
-  const titles = {dashboard:'Dashboard', suppliers:'Supplier Management', products:'Product Listings', categories:'Category Manager', buyers:'Buyer Management'};
-  const titleEl = document.getElementById('topbarTitle');
-  if (titleEl) titleEl.textContent = titles[id] || id;
-}
-
-function showToast(msg, type = 'success') {
-  const stack = document.getElementById('toastStack');
-  if (!stack) return;
-  const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.textContent = msg;
-  stack.appendChild(t);
-  setTimeout(() => t.remove(), 3100);
-}
-
-function approveSupplier(btn) {
-  const row = btn.closest('tr');
-  const pill = row.querySelector('.pill');
-  if (pill) { pill.className = 'pill pill-approved'; pill.textContent = 'Approved'; }
-  row.querySelector('.actions-cell').innerHTML = '<span style="color:var(--neon-green);font-size:.8rem;font-weight:600;">✓ Approved</span><button class="btn-delete" onclick="deleteRow(this)">🗑</button>';
-  updateStat('stat-pending', -1);
-  showToast('Supplier approved successfully!', 'success');
-}
-function rejectSupplier(btn) {
-  const row = btn.closest('tr');
-  const pill = row.querySelector('.pill');
-  if (pill) { pill.className = 'pill pill-rejected'; pill.textContent = 'Rejected'; }
-  row.querySelector('.actions-cell').innerHTML = '<span style="color:var(--neon-pink);font-size:.8rem;font-weight:600;">✕ Rejected</span><button class="btn-delete" onclick="deleteRow(this)">🗑</button>';
-  showToast('Supplier rejected.', 'error');
-}
-
-function deleteRow(btn) {
-  const row = btn.closest('tr');
-  row.style.transition = 'opacity .3s';
-  row.style.opacity = '0';
-  setTimeout(() => row.remove(), 300);
-  showToast('Listing removed.', 'info');
-}
-
-function deleteCat(btn) {
-  const item = btn.closest('.cat-mgr-item');
-  item.style.transition = 'all .25s';
-  item.style.opacity = '0'; item.style.transform = 'scale(.9)';
-  setTimeout(() => item.remove(), 250);
-  showToast('Category deleted.', 'info');
-}
-function addCategory() {
-  const input = document.getElementById('catInput');
-  const val = input?.value.trim();
-  if (!val) { showToast('Please enter a category name.', 'error'); return; }
-  const grid = document.getElementById('catGrid');
-  const div = document.createElement('div');
-  div.className = 'cat-mgr-item';
-  div.style.animation = 'fadeIn .3s ease-out';
-  div.innerHTML = `
-    <div>
-      <div class="cat-mgr-name">${val}</div>
-      <div class="cat-mgr-count">0 products</div>
-    </div>
-    <button class="cat-del-btn" onclick="deleteCat(this)">🗑️</button>
-  `;
-  grid?.appendChild(div);
-  if (input) input.value = '';
-  showToast(`Category "${val}" added!`, 'success');
-}
-
-function updateStat(id, delta) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const cur = parseInt(el.textContent) || 0;
-  el.textContent = Math.max(0, cur + delta);
-}
-
-function searchTable(tableId, query) {
-  const q = query.toLowerCase();
-  const rows = document.querySelectorAll(`#${tableId} tbody tr`);
-  rows.forEach(row => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(q) ? '' : 'none';
-  });
-}
-
-function adminLogout() {
-  if (confirm('Logout from admin panel?')) {
-    window.location.href = '../index.html';
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  spawnParticles();
-  const dateEl = document.getElementById('topbarDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('en-PK', { weekday:'short', day:'numeric', month:'short', year:'numeric' });
-  }
-  document.getElementById('overlay')?.addEventListener('click', () => {
-    document.querySelectorAll('.slide-panel').forEach(p => p.classList.remove('open'));
-    document.getElementById('overlay')?.classList.remove('show');
-  });
-});
-
-const style = document.createElement('style');
-style.textContent = `@keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}`;
-document.head.appendChild(style);
+let editingProductId=null;
+function spawnParticles(){const c=document.getElementById('particles');if(!c)return;for(let i=0;i<25;i++){const p=document.createElement('div');p.className='particle';p.style.cssText=`left:${Math.random()*100}%;width:2px;height:2px;animation-duration:${Math.random()*12+8}s;animation-delay:${Math.random()*10}s;background:rgba(0,255,136,.7)`;c.appendChild(p);}}
+function money(n){return Number(n||0).toLocaleString('en-PK');}
+function esc(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
+function showPage(id,el){document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');if(el)el.classList.add('active');topbarTitle.textContent={dashboard:'Dashboard',products:'Product Management',orders:'Order Management'}[id]||id;if(id==='dashboard')loadDashboard();if(id==='products')loadProductsAdmin();if(id==='orders')loadOrdersAdmin();}
+async function guardAdmin(){try{let session=Auth.getSession(); if(Auth.isLoggedIn() && !session){session=await Auth.me();localStorage.setItem('th_session',JSON.stringify(session));} if(!session||session.role!=='admin')throw new Error('Admin access required');loginGuard.style.display='none';adminApp.style.display='flex';return true;}catch{loginGuard.style.display='block';adminApp.style.display='none';return false;}}
+function statCard(label,value,icon='📊'){return `<div class="stat-box green"><div class="stat-label"><span>${icon}</span>${label}</div><div class="stat-value green">${value}</div></div>`;}
+function renderBars(monthly=[]){const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const max=Math.max(1,...monthly.map(m=>m.orders));return monthly.map(m=>`<div class="bar-item"><div class="bar" style="height:${Math.max(6,(m.orders/max)*100)}%" title="${months[m.month-1]}: ${m.orders} orders"></div><span>${months[m.month-1]}</span></div>`).join('');}
+function renderStatusChart(dist={}){const total=Math.max(1,Object.values(dist).reduce((a,b)=>a+b,0));return Object.entries(dist).map(([k,v])=>`<div class="status-row"><span>${k}</span><div class="status-track"><i style="width:${(v/total)*100}%"></i></div><strong>${v}</strong></div>`).join('');}
+async function loadDashboard(){try{const s=await Stats.admin();const items=[['Total Products',s.total_products,'📦'],['Total Orders',s.total_orders,'🧾'],['Pending Orders',s.pending_orders,'⏳'],['Confirmed Orders',s.confirmed_orders,'✅'],['Processing Orders',s.processing_orders,'⚙️'],['Shipped Orders',s.shipped_orders,'🚚'],['Delivered Orders',s.delivered_orders,'🏁'],['Cancelled Orders',s.cancelled_orders,'❌'],['Today\'s Orders',s.today_orders,'📅'],['Monthly Orders',s.monthly_orders,'🗓️'],['Total Revenue',`PKR ${money(s.revenue)}`,'💰']];statsGrid.innerHTML=items.map(x=>statCard(...x)).join('');recentOrders.innerHTML=(s.recent_orders||[]).map(o=>`<tr><td>${esc(o.order_id)}</td><td>${esc(o.customer_name)}</td><td>${esc(o.product_name)}</td><td>PKR ${money(o.total_price)}</td><td><span class="pill pill-approved">${esc(o.order_status)}</span></td><td>${new Date(o.created_at).toLocaleString()}</td></tr>`).join('')||'<tr><td colspan="6">No orders yet.</td></tr>';monthlyOrdersChart.innerHTML=renderBars(s.monthly||[]);monthlySales.innerHTML='PKR '+money((s.monthly||[]).reduce((a,b)=>a+(b.sales||0),0));statusChart.innerHTML=renderStatusChart(s.status_distribution||{});}catch(e){showToast(e.message,'error');}}
+async function loadProductsAdmin(){try{const active=await Products.list({status:'active',limit:500});const inactive=await Products.list({status:'inactive',limit:500}).catch(()=>({products:[]}));const rows=[...(active.products||[]),...(inactive.products||[])];productsTable.innerHTML=rows.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.category)}</td><td>PKR ${money(p.price)}</td><td>${p.stock}</td><td><span class="verified-label">My Store • Verified</span></td><td><button class="btn-small" onclick='editProduct(${JSON.stringify(p).replace(/'/g,"&#39;")})'>Edit</button><button class="btn-small danger" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="6">No products.</td></tr>';}catch(e){showToast(e.message,'error');}}
+function editProduct(p){editingProductId=p.id;pName.value=p.name;pCat.value=p.category;pPrice.value=p.price;pStock.value=p.stock;pImage.value=p.image||'';pStatus.value=p.status||'active';pDesc.value=p.description;productFormTitle.textContent='Edit Product';}
+function resetProductForm(){editingProductId=null;['pName','pCat','pPrice','pStock','pImage','pDesc'].forEach(id=>document.getElementById(id).value='');pStatus.value='active';productFormTitle.textContent='Add Product';}
+async function saveProduct(){const payload={name:pName.value.trim(),category:pCat.value.trim(),price:Number(pPrice.value),stock:Number(pStock.value),image:pImage.value.trim()||null,description:pDesc.value.trim(),status:pStatus.value};if(!payload.name||!payload.category||!payload.description||payload.price<0||payload.stock<0)return showToast('Fill valid product name, category, price, stock and description.','error');try{if(editingProductId)await Products.update(editingProductId,payload);else await Products.create(payload);showToast('Product saved.');resetProductForm();loadProductsAdmin();loadDashboard();}catch(e){showToast(e.message,'error');}}
+async function deleteProduct(id){if(!confirm('Delete this product?'))return;try{await Products.delete(id);showToast('Product deleted.');loadProductsAdmin();loadDashboard();}catch(e){showToast(e.message,'error');}}
+async function loadOrdersAdmin(){try{const orders=await Orders.list();ordersTable.innerHTML=orders.map(o=>`<tr><td>${esc(o.order_id)}</td><td>${esc(o.customer_name)}</td><td>${esc(o.phone)}</td><td>${esc(o.email||'-')}</td><td>${esc(o.city)}<br><small>${esc(o.address)}</small></td><td>${esc(o.product_name)}</td><td>${o.quantity}</td><td>PKR ${money(o.total_price)}</td><td>${esc(o.notes||'-')}</td><td><span class="pill pill-approved">${esc(o.order_status)}</span></td><td>${new Date(o.created_at).toLocaleString()}</td><td><select class="status-select" onchange="setOrderStatus('${o.order_id}',this.value)"><option value="">Update</option>${['confirmed','processing','shipped','delivered','cancelled'].map(st=>`<option value="${st}">${st}</option>`).join('')}</select><button class="btn-small danger" onclick="deleteOrder('${o.order_id}')">Delete</button></td></tr>`).join('')||'<tr><td colspan="12">No orders yet.</td></tr>';}catch(e){showToast(e.message,'error');}}
+async function setOrderStatus(id,status){if(!status)return;try{await Orders.setStatus(id,status);showToast('Order updated.');loadOrdersAdmin();loadDashboard();}catch(e){showToast(e.message,'error');}}
+async function deleteOrder(id){if(!confirm('Delete this order?'))return;try{await Orders.delete(id);showToast('Order deleted.');loadOrdersAdmin();loadDashboard();}catch(e){showToast(e.message,'error');}}
+document.addEventListener('DOMContentLoaded',async()=>{spawnParticles();if(window.topbarDate)topbarDate.textContent=new Date().toLocaleDateString('en-PK',{weekday:'short',day:'numeric',month:'short',year:'numeric'});if(await guardAdmin()){loadDashboard();loadProductsAdmin();}});
