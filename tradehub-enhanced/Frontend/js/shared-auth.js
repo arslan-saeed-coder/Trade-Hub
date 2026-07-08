@@ -60,9 +60,9 @@ async function handleLogin() {
 
     setTimeout(() => {
       if (data.user.role === "admin") {
-        window.location.href = "admin/index.html";
+        window.location.href = "/admin/index.html";
       } else {
-        window.location.href = "pages/buyer-dashboard.html";
+        window.location.href = "/pages/buyer-dashboard.html";
       }
     }, 700);
   } catch (e) {
@@ -91,7 +91,7 @@ async function handleRegister() {
     updateNavForUser(data.user);
 
     setTimeout(() => {
-      window.location.href = "pages/buyer-dashboard.html";
+      window.location.href = "/pages/buyer-dashboard.html";
     }, 700);
   } catch (e) {
     showToast(e.message || "Registration failed.", "error");
@@ -102,18 +102,11 @@ function updateNavForUser(user) {
   const actions = document.querySelector(".nav-actions");
   if (!actions) return;
 
-  const inPages = location.pathname.includes("/pages/");
-  const inAdmin = location.pathname.includes("/admin/");
-
-  const buyerPath = inAdmin ? "../pages/buyer-dashboard.html" : inPages ? "buyer-dashboard.html" : "pages/buyer-dashboard.html";
-
-  const adminPath = inAdmin ? "index.html" : inPages ? "../admin/index.html" : "admin/index.html";
-
   actions.innerHTML = `
-    <a href="${buyerPath}" class="btn-login">My Account</a>
+    <a href="/pages/buyer-dashboard.html" class="btn-login">My Account</a>
     ${
       user.role === "admin"
-        ? `<a href="${adminPath}" class="btn-login">Admin</a>`
+        ? `<a href="/admin/index.html" class="btn-login">Admin</a>`
         : ""
     }
     <button class="btn-register" onclick="Auth.logout()">Logout</button>
