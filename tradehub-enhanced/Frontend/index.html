@@ -1,9 +1,300 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Store — Verified E-commerce</title><link rel="stylesheet" href="css/main.css"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"></head><body>
-<div id="scroll-progress"></div><button id="back-to-top" aria-label="Back to top">↑</button>
-<nav class="navbar" id="mainNav"><div class="nav-container"><a href="index.html" class="logo">My<span>Store</span></a><ul class="nav-links"><li><a href="pages/products.html">Products</a></li><li><a href="pages/categories.html">Categories</a></li><li><a href="pages/about.html">About</a></li><li><a href="pages/contact.html">Contact</a></li></ul><div class="nav-actions"><a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a><a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a></div></div></nav>
-<section class="hero"><div class="hero-glow"></div><div class="hero-content"><div class="hero-badge">✅ Single-owner verified store</div><h1>Shop quality products from <span>My Store</span></h1><p>Browse products, view details, place an order, and send the order directly to the admin on WhatsApp.</p><div class="hero-search"><input type="text" id="searchInput" placeholder="Search products…" autocomplete="off"><button onclick="doSearch()">Search</button></div><div class="hero-stats"><div class="hero-stat"><strong id="cnt-products">0</strong>Products</div><div class="hero-stat-divider" style="align-self:stretch"></div><div class="hero-stat"><strong>1</strong>Verified Seller</div><div class="hero-stat-divider" style="align-self:stretch"></div><div class="hero-stat"><strong>24/7</strong>WhatsApp Orders</div></div></div></section>
-<section class="section"><div class="section-inner"><div class="section-header"><div><h2>Latest Products</h2><p>Every product displays: Sold by My Store (Verified Seller)</p></div><a href="pages/products.html" class="view-all">View All <span>→</span></a></div><div class="products-grid" id="productsGrid"></div></div></section>
-<section class="join-banner"><h2>Ready to order?</h2><p>Select a product, click Buy Now, fill the order form, and WhatsApp will open with a pre-filled message for the admin.</p><a href="pages/products.html" class="btn-join">Browse Products</a></section>
-<footer class="footer"><div class="footer-inner"><div class="footer-bottom"><p>© 2026 My Store. All rights reserved.</p></div></div></footer>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Store — Quality Products, Delivered</title>
+<link rel="stylesheet" href="css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Scroll Progress -->
+<div id="scroll-progress"></div>
+
+<!-- Back to Top -->
+<button id="back-to-top" aria-label="Back to top">↑</button>
+
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="index.html" class="logo">My<span>Store</span></a>
+    <ul class="nav-links">
+      <li><a href="pages/products.html">Products</a></li>
+      <li><a href="pages/categories.html">Categories</a></li>
+      <li><a href="pages/about.html">About</a></li>
+      <li><a href="pages/contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="pages/products.html">Products</a>
+    <a href="pages/categories.html">Categories</a>
+    <a href="pages/about.html">About</a>
+    <a href="pages/contact.html">Contact</a>
+    <div class="mobile-actions">
+      <a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" style="flex:1;text-align:center;" onclick="openModal('register');return false;">Register</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">✅ Verified Seller · Fast Delivery</div>
+    <h1>Quality Products, <span>Delivered to Your Door</span></h1>
+    <p>Browse our catalog, place your order in minutes, and confirm instantly over WhatsApp — no middlemen, no hassle.</p>
+    <div class="hero-search">
+      <input type="text" id="searchInput" placeholder="Search products…" autocomplete="off" />
+      <button onclick="doSearch()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Search
+      </button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong id="cnt-products">0</strong>Products Listed</div>
+      <div class="hero-stat-divider" style="align-self:stretch"></div>
+      <div class="hero-stat"><strong id="cnt-categories">0</strong>Categories</div>
+      <div class="hero-stat-divider" style="align-self:stretch"></div>
+      <div class="hero-stat"><strong>✅</strong>Verified Seller</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div>
+        <h2>Browse by Category</h2>
+        <p>Find what you're looking for, faster</p>
+      </div>
+      <a href="pages/categories.html" class="view-all">View All <span>→</span></a>
+    </div>
+    <div class="categories-grid" id="categoriesGrid"></div>
+  </div>
+</section>
+
+<section class="section bg-white">
+  <div class="section-inner">
+    <div class="section-header reveal">
+      <div>
+        <h2>Featured Products</h2>
+        <p>Popular picks from our store</p>
+      </div>
+      <a href="pages/products.html" class="view-all">View All <span>→</span></a>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</section>
+
+<section class="join-banner reveal">
+  <h2>Ready to Order?</h2>
+  <p>Browse our full catalog and place your order in minutes — confirmed instantly over WhatsApp.</p>
+  <a href="pages/products.html" class="btn-join">Shop All Products</a>
+</section>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">My<span>Store</span></a>
+        <p>Quality products, sold directly by us — with fast delivery across Pakistan.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="pages/products.html">All Products</a></li>
+          <li><a href="pages/categories.html">Categories</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Account</h4>
+        <ul>
+          <li><a href="pages/buyer-dashboard.html">My Orders</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="pages/about.html">About Us</a></li>
+          <li><a href="pages/contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 My Store. All rights reserved. Made with ❤️ in Pakistan.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Welcome back</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+      <button class="modal-tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+    </div>
+    <div id="loginForm">
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" id="loginEmail"></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="loginPass"></div>
+      <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Login</button>
+    </div>
+    <div id="registerForm" style="display:none">
+      <div class="form-group"><label>Full Name</label><input type="text" placeholder="Muhammad Ali" id="regName"></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@example.com" id="regEmail"></div>
+      <div class="form-group"><label>Phone</label><input type="tel" placeholder="03001234567" id="regPhone"></div>
+      <div class="form-group"><label>Password</label><input type="password" placeholder="••••••••" id="regPass"></div>
+      <button class="btn-submit" id="regBtn" onclick="handleRegister()">Create Account</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-stack" id="toastStack"></div>
-<script src="js/config.js"></script><script src="js/api.js"></script><script src="js/shared-auth.js"></script><script src="js/main.js"></script><script src="js/animations.js"></script></body></html>
+
+<script src="js/config.js"></script>
+<script src="js/api.js"></script>
+<script>
+async function loadHome(){
+  try {
+    const stats = await Stats.public();
+    document.getElementById('cnt-products').textContent = stats.products;
+    document.getElementById('cnt-categories').textContent = stats.categories;
+  } catch(e){}
+
+  try {
+    const cats = await Categories.list();
+    const emojiMap = {electronics:'📱',apparel:'👕',textiles:'🧵',hardware:'🔧',agriculture:'🌾',sports:'⚽',leather:'👜','food & grain':'🍚',beauty:'💄'};
+    document.getElementById('categoriesGrid').innerHTML = cats.map(c => `
+      <a href="pages/products.html?cat=${encodeURIComponent(c)}" class="cat-card reveal">
+        <span class="cat-icon">${emojiMap[c.toLowerCase()] || '🛍️'}</span>
+        <div class="cat-name">${c}</div>
+      </a>
+    `).join('');
+  } catch(e){
+    document.getElementById('categoriesGrid').innerHTML = '';
+  }
+
+  try {
+    const data = await Products.list({ limit: 8 });
+    const grid = document.getElementById('productsGrid');
+    if (!data.products.length){
+      grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products yet</div><div class="empty-text">Check back soon!</div></div>`;
+      return;
+    }
+    grid.innerHTML = data.products.map(p => `
+      <div class="product-card">
+        <div class="product-img">${p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : '📦'}</div>
+        <div class="product-body">
+          <div class="product-price">PKR ${p.price.toLocaleString()}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-supplier">Sold by My Store ✅</div>
+          <a href="pages/products.html?q=${encodeURIComponent(p.name)}" class="btn-inquiry" style="display:block;text-align:center;text-decoration:none">View & Buy</a>
+        </div>
+      </div>
+    `).join('');
+  } catch(e){
+    document.getElementById('productsGrid').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Couldn't load products</div></div>`;
+  }
+}
+
+function doSearch() {
+  const q = document.getElementById('searchInput')?.value.trim();
+  window.location.href = q ? `pages/products.html?q=${encodeURIComponent(q)}` : 'pages/products.html';
+}
+document.getElementById('searchInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+function openModal(tab) {
+  document.getElementById('authModal').classList.add('show');
+  switchTab(tab || 'login');
+}
+function closeModal() { document.getElementById('authModal').classList.remove('show'); }
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('tabLogin').classList.toggle('active', isLogin);
+  document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+  document.getElementById('modalTitle').textContent = isLogin ? 'Welcome back' : 'Create account';
+}
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) { showToast('Please fill all fields.', 'error'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.textContent = 'Logging in…'; btn.disabled = true;
+  try {
+    const data = await Auth.login(email, pass);
+    closeModal();
+    showToast(`Welcome back, ${data.user.name}!`, 'success');
+    updateNavForUser(data.user);
+  } catch (err) {
+    showToast(err.message || 'Login failed.', 'error');
+  } finally {
+    btn.textContent = 'Login'; btn.disabled = false;
+  }
+}
+async function handleRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const pass = document.getElementById('regPass').value;
+  if (!name || !email || !phone || !pass) { showToast('Please fill all fields.', 'error'); return; }
+  const btn = document.getElementById('regBtn');
+  btn.textContent = 'Creating account…'; btn.disabled = true;
+  try {
+    const data = await Auth.register(name, email, pass, phone);
+    closeModal();
+    showToast(`Account created! Welcome, ${data.user.name}!`, 'success');
+    updateNavForUser(data.user);
+  } catch (err) {
+    showToast(err.message || 'Registration failed.', 'error');
+  } finally {
+    btn.textContent = 'Create Account'; btn.disabled = false;
+  }
+}
+function updateNavForUser(user) {
+  const actions = document.querySelector('.nav-actions');
+  if (actions) {
+    actions.innerHTML = `
+      <a href="pages/buyer-dashboard.html" class="btn-login">My Orders</a>
+      <button class="btn-register" onclick="logout()">Logout</button>
+    `;
+  }
+}
+function logout() { Auth.logout(); }
+function showToast(msg, type = 'success') {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  stack.appendChild(t);
+  setTimeout(() => t.remove(), 3100);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadHome();
+  const session = Auth.getSession();
+  if (session) updateNavForUser(session);
+  document.getElementById('authModal')?.addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+});
+</script>
+<script src="js/animations.js"></script>
+</body>
+</html>
