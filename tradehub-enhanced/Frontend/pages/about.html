@@ -1,1 +1,68 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>About — My Store</title><link rel="stylesheet" href="../css/main.css"></head><body><nav class="navbar"><div class="nav-container"><a href="../index.html" class="logo">My<span>Store</span></a><ul class="nav-links"><li><a href="products.html">Products</a></li><li><a href="categories.html">Categories</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul><div class="nav-actions"><a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a><a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a></div></div></nav><div class="page-header store-header"><div class="ph-inner"><span class="eyebrow">Single Owner Store</span><h1>About My Store</h1><p>My Store is a verified e-commerce store. All products are owned and managed by the Admin, and every listing is shown as <strong>Sold by My Store (Verified Seller)</strong>.</p><div class="values-grid"><div class="value-card"><div class="value-icon">✅</div><div class="value-title">Verified Seller</div><div class="value-text">Every product is fulfilled by My Store.</div></div><div class="value-card"><div class="value-icon">🛒</div><div class="value-title">Simple Ordering</div><div class="value-text">Browse, buy now, save order, and continue on WhatsApp.</div></div><div class="value-card"><div class="value-icon">🔐</div><div class="value-title">Admin RBAC</div><div class="value-text">Only the owner can manage products and orders.</div></div></div></div></div><footer class="footer"><div class="footer-inner"><div class="footer-bottom"><p>© 2026 My Store.</p></div></div></footer><script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/shared-auth.js"></script><script src="../js/nav.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — My Store</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">My<span>Store</span></a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="about.html" class="active-nav">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a><a href="about.html">About</a><a href="contact.html">Contact</a>
+    <div class="mobile-actions">
+      <a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" style="flex:1;text-align:center;" onclick="openModal('register');return false;">Register</a>
+    </div>
+  </div>
+</nav>
+<div class="page-header" style="text-align:center">
+  <div class="ph-inner">
+    <h1>About My Store</h1>
+    <p>Quality products, sold directly by us — with fast delivery across Pakistan</p>
+  </div>
+</div>
+<div class="about-section">
+  <h2 class="reveal">Our Mission</h2>
+  <p class="reveal">My Store is a single-owner online store bringing quality, verified products directly to customers across Pakistan. We're cutting out the middlemen — every product you see is sourced, stocked, and shipped by us.</p>
+  <p class="reveal">Place your order in a few clicks, confirm it instantly over WhatsApp, and track it through to delivery.</p>
+  <h2 style="margin-top:48px" class="reveal">Why Shop With Us?</h2>
+  <div class="values-grid">
+    <div class="value-card reveal reveal-delay-1"><div class="value-icon">✅</div><div class="value-title">Verified Seller</div><div class="value-text">Every product is listed and fulfilled directly by us.</div></div>
+    <div class="value-card reveal reveal-delay-2"><div class="value-icon">💬</div><div class="value-title">Direct WhatsApp</div><div class="value-text">Confirm your order instantly via WhatsApp — no middlemen.</div></div>
+    <div class="value-card reveal reveal-delay-3"><div class="value-icon">🇵🇰</div><div class="value-title">100% Pakistani</div><div class="value-text">Built for our customers across Pakistan, priced in PKR.</div></div>
+    <div class="value-card reveal reveal-delay-4"><div class="value-icon">🚚</div><div class="value-title">Fast Delivery</div><div class="value-text">Orders are processed and shipped quickly, nationwide.</div></div>
+  </div>
+</div>
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand"><a href="../index.html" class="logo">My<span>Store</span></a><p>Pakistan's most trusted B2B wholesale marketplace.</p></div>
+      <div class="footer-col"><h4>Shop</h4><ul><li><a href="products.html">All Products</a></li><li><a href="categories.html">Categories</a></li></ul></div>
+      <div class="footer-col"><h4>Account</h4><ul><li><a href="buyer-dashboard.html">My Orders</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 My Store. All rights reserved. Made with ❤️ in Pakistan.</p><div class="footer-bottom-links"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+  </div>
+</footer>
+<script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/shared-auth.js"></script><script src="../js/nav.js"></script>
+</body>
+</html>
