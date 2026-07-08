@@ -1,41 +1,243 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Products — My Store</title><link rel="stylesheet" href="../css/main.css"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"></head><body>
-<div id="scroll-progress"></div><button id="back-to-top" aria-label="Back to top">↑</button>
-<nav class="navbar" id="mainNav"><div class="nav-container"><a href="../index.html" class="logo">My<span>Store</span></a><ul class="nav-links"><li><a href="products.html" class="active-nav">Products</a></li><li><a href="categories.html">Categories</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul><div class="nav-actions"><a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a><a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a></div></div></nav>
-<header class="page-header store-header"><div class="ph-inner"><span class="eyebrow">Premium Electronics Store</span><h1>Shop verified products</h1><p>Every item is owned and fulfilled by My Store. No third-party product owners. Everything is fulfilled by My Store.</p></div></header>
-<section class="filters-bar"><div class="filters-inner"><input type="text" class="filter-search" id="searchFilter" placeholder="Search mobile accessories, gaming, audio…" oninput="loadProducts()"><select class="filter-select" id="catFilter" onchange="loadProducts()"><option value="">All Categories</option></select><span class="results-count" id="resultsCount">Loading…</span></div></section>
-<main class="products-page"><div class="products-grid" id="productsGrid"></div></main>
-<div class="inq-modal" id="detailsModal"><div class="inq-box product-detail-box"><button class="modal-close floating" onclick="closeDetails()">✕</button><div id="detailsContent"></div></div></div>
-<div class="inq-modal" id="orderModal"><div class="inq-box order-box"><button class="modal-close floating" onclick="closeOrder()">✕</button><h3>Complete Your Order</h3><p class="muted">Your order is saved first. WhatsApp opens only after the database confirms it.</p><div class="order-summary" id="orderSummary"></div><div class="order-grid"><div class="form-group"><label>Full Name *</label><input id="orderName" type="text" placeholder="Enter full name"></div><div class="form-group"><label>Phone Number *</label><input id="orderPhone" type="tel" placeholder="03XXXXXXXXX"></div><div class="form-group"><label>Email Optional</label><input id="orderEmail" type="email" placeholder="you@example.com"></div><div class="form-group"><label>City *</label><input id="orderCity" type="text" placeholder="Lahore"></div><div class="form-group wide"><label>Complete Delivery Address *</label><textarea id="orderAddress" rows="3" placeholder="House, street, area, landmark"></textarea></div><div class="form-group"><label>Quantity *</label><input id="orderQty" type="number" min="1" value="1" oninput="updateTotal()"></div><div class="form-group wide"><label>Additional Notes Optional</label><textarea id="orderNotes" rows="2" placeholder="Color, delivery timing, etc."></textarea></div></div><div class="checkout-total"><span>Total</span><strong>PKR <span id="orderTotal">0</span></strong></div><button class="btn-submit premium" id="placeOrderBtn" onclick="submitOrder()">Place Order Securely</button></div></div>
-<div class="inq-modal" id="successModal"><div class="inq-box success-box"><div class="success-icon">✓</div><h3>Order Placed Successfully</h3><p id="successText"></p><div class="success-actions"><button class="btn-submit premium" onclick="openSavedWhatsapp()">Open WhatsApp Now</button><button class="ghost-btn" onclick="closeSuccess()">Continue Shopping</button></div></div></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products — My Store</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+.sold-by{font-size:.78rem;color:var(--gray-500);margin:2px 0 10px;}
+.sold-by strong{color:var(--gray-700);}
+.sold-by .badge-verified{color:var(--green);font-weight:700;}
+.qty-row{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+.qty-row button{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--gray-200);background:white;font-weight:800;cursor:pointer;font-size:1rem;}
+.qty-row input{width:64px;text-align:center;padding:8px;border:1.5px solid var(--gray-200);border-radius:8px;font-weight:700;}
+.order-total{font-weight:800;font-size:1.05rem;margin-bottom:16px;color:var(--gray-900);}
+.order-total span{color:var(--green);}
+</style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+
+<nav class="navbar" id="mainNav">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">My<span>Store</span></a>
+    <ul class="nav-links">
+      <li><a href="products.html" class="active-nav">Products</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" onclick="openModal('register');return false;">Register</a>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav-mobile-menu" id="navMobileMenu">
+    <a href="products.html">Products</a>
+    <a href="categories.html">Categories</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <div class="mobile-actions">
+      <a href="#" class="btn-login" style="flex:1;text-align:center;" onclick="openModal('login');return false;">Login</a>
+      <a href="#" class="btn-register" style="flex:1;text-align:center;" onclick="openModal('register');return false;">Register</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="ph-inner">
+    <h1>Our Products</h1>
+    <p>Quality products, sold directly by us</p>
+  </div>
+</div>
+
+<div class="filters-bar">
+  <div class="filters-inner">
+    <input type="text" class="filter-search" id="searchFilter" placeholder="Search products…" oninput="loadProducts()">
+    <select class="filter-select" id="catFilter" onchange="loadProducts()">
+      <option value="">All Categories</option>
+    </select>
+    <select class="filter-select" id="sortFilter" onchange="renderProducts()">
+      <option value="">Sort: Default</option>
+      <option value="name">Name A-Z</option>
+      <option value="price-low">Price: Low to High</option>
+      <option value="price-high">Price: High to Low</option>
+    </select>
+    <span class="results-count" id="resultsCount">Loading…</span>
+  </div>
+</div>
+
+<div class="products-page">
+  <div class="products-grid" id="productsGrid"></div>
+</div>
+
+<!-- Order Modal -->
+<div class="inq-modal" id="orderModal">
+  <div class="inq-box">
+    <h3>Complete Your Order</h3>
+    <p style="font-size:.875rem;color:var(--gray-500);margin-bottom:8px">Product: <strong id="ordProductName"></strong></p>
+    <div class="qty-row">
+      <button type="button" onclick="changeQty(-1)">−</button>
+      <input type="number" id="ordQty" value="1" min="1" oninput="updateOrderTotal()">
+      <button type="button" onclick="changeQty(1)">+</button>
+    </div>
+    <div class="order-total">Total: <span id="ordTotal">PKR 0</span></div>
+    <div class="form-group"><label>Full Name *</label><input type="text" id="ordName" placeholder="Muhammad Ali"></div>
+    <div class="form-group"><label>Phone Number *</label><input type="tel" id="ordPhone" placeholder="03001234567"></div>
+    <div class="form-group"><label>Email (optional)</label><input type="email" id="ordEmail" placeholder="you@example.com"></div>
+    <div class="form-group"><label>Delivery Address *</label><input type="text" id="ordAddress" placeholder="House / Street, Area"></div>
+    <div class="form-group"><label>City *</label><input type="text" id="ordCity" placeholder="Lahore"></div>
+    <div class="form-group"><label>Order Notes (optional)</label><textarea id="ordNotes" rows="2" placeholder="Any special instructions…"></textarea></div>
+    <button class="btn-submit" id="ordSubmitBtn" onclick="submitOrder()">Place Order</button>
+    <button onclick="closeOrder()" style="width:100%;margin-top:10px;padding:12px;border:none;background:none;color:var(--gray-500);cursor:pointer;font-weight:600;border-radius:11px;transition:background .2s" onmouseover="this.style.background='var(--gray-100)'" onmouseout="this.style.background='none'">Cancel</button>
+  </div>
+</div>
+
 <div class="toast-stack" id="toastStack"></div>
-<script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/shared-auth.js"></script>
+
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/shared-auth.js"></script>
 <script>
-let products=[]; let selected=null; let savedWhatsapp='';
-function money(n){return Number(n||0).toLocaleString('en-PK');}
-function escapeHtml(s=''){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
-async function loadCategories(){try{const cats=await Categories.list();document.getElementById('catFilter').innerHTML='<option value="">All Categories</option>'+cats.map(c=>`<option>${escapeHtml(c)}</option>`).join('');}catch(e){}}
+let ALL_PRODUCTS = [];
+let currentProduct = null;
+
+async function loadCategories(){
+  try {
+    const cats = await Categories.list();
+    const sel = document.getElementById('catFilter');
+    sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('cat');
+    if (cat && cats.some(c=>c.toLowerCase()===cat.toLowerCase())) sel.value = cats.find(c=>c.toLowerCase()===cat.toLowerCase());
+  } catch(e){ /* categories are optional */ }
+}
+
 async function loadProducts(){
-  const search=document.getElementById('searchFilter').value.trim(); const category=document.getElementById('catFilter').value;
-  const grid=document.getElementById('productsGrid'); grid.innerHTML='<div class="loading-card">Loading products…</div>';
-  try{const data=await Products.list({search,category}); products=data.products||[]; renderProducts(products);}catch(e){grid.innerHTML='<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Unable to load products</div><p>Check backend URL in js/config.js.</p></div>';showToast(e.message,'error');}
+  const grid = document.getElementById('productsGrid');
+  document.getElementById('resultsCount').textContent = 'Loading…';
+  const search = document.getElementById('searchFilter').value.trim();
+  const category = document.getElementById('catFilter').value;
+  try {
+    const data = await Products.list({ search, category, limit: 100 });
+    ALL_PRODUCTS = data.products;
+    renderProducts();
+  } catch(err){
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Couldn't load products</div><div class="empty-text">${err.message}</div></div>`;
+    document.getElementById('resultsCount').textContent = '';
+  }
 }
-function productImage(p){return p.image?`<img src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}">`:'<span class="product-emoji">🎧</span>';}
-function renderProducts(list){const grid=document.getElementById('productsGrid');document.getElementById('resultsCount').textContent=`Showing ${list.length} products`;if(!list.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products found</div><p>Try another search or category.</p></div>';return;}grid.innerHTML=list.map(p=>`<article class="product-card pro-card"><div class="product-img">${productImage(p)}<span class="stock-badge">${p.stock>0?'In stock':'Out of stock'}</span></div><div class="product-body"><div class="product-category">${escapeHtml(p.category)}</div><div class="product-name">${escapeHtml(p.name)}</div><div class="product-price">PKR ${money(p.price)}</div><div class="seller-strip"><span>Sold by</span><strong>My Store</strong><em>Verified Seller</em></div><p class="product-desc">${escapeHtml(p.description)}</p><div class="card-actions"><button class="ghost-btn" onclick="openDetails('${p.id}')">Details</button><button class="btn-inquiry" ${p.stock<=0?'disabled':''} onclick="openOrder('${p.id}')">Buy Now</button></div></div></article>`).join('');}
-async function openDetails(id){try{selected=await Products.get(id);document.getElementById('detailsContent').innerHTML=`<div class="detail-layout"><div class="detail-image">${productImage(selected)}</div><div><div class="product-category">${escapeHtml(selected.category)}</div><h2>${escapeHtml(selected.name)}</h2><div class="product-price big">PKR ${money(selected.price)}</div><div class="seller-strip large"><span>Sold by</span><strong>My Store</strong><em>Verified Seller</em></div><p>${escapeHtml(selected.description)}</p><p class="muted">Available stock: ${selected.stock}</p><button class="btn-submit premium" ${selected.stock<=0?'disabled':''} onclick="closeDetails();openOrder('${selected.id}')">Buy Now</button></div></div>`;document.getElementById('detailsModal').classList.add('show');}catch(e){showToast(e.message,'error');}}
-function closeDetails(){document.getElementById('detailsModal').classList.remove('show');}
-function openOrder(id){const session=Auth.getSession(); if(!session){openModal('login');return showToast('Please login before placing an order.','error');} selected=products.find(p=>p.id===id)||selected; if(!selected)return; orderName.value=session.name||''; orderEmail.value=session.email||''; orderPhone.value=session.phone||''; orderCity.value=''; orderAddress.value=''; orderNotes.value=''; orderQty.value=1; orderSummary.innerHTML=`<strong>${escapeHtml(selected.name)}</strong><span>PKR ${money(selected.price)} each</span><small>Sold by My Store • Verified Seller</small>`; updateTotal(); document.getElementById('orderModal').classList.add('show');}
-function updateTotal(){const q=Math.max(1,Number(document.getElementById('orderQty').value||1)); if(orderQty.value && Number(orderQty.value)<1) orderQty.value=1; document.getElementById('orderTotal').textContent=money((selected?.price||0)*q);}
-function closeOrder(){document.getElementById('orderModal').classList.remove('show');}
-function closeSuccess(){document.getElementById('successModal').classList.remove('show');}
-function openSavedWhatsapp(){if(savedWhatsapp) window.location.href=savedWhatsapp;}
-function validPhone(v){return /^[+0-9\-\s]{7,20}$/.test(v);}
+
+function renderProducts(){
+  const grid = document.getElementById('productsGrid');
+  const sort = document.getElementById('sortFilter').value;
+  let list = [...ALL_PRODUCTS];
+  if (sort === 'name') list.sort((a,b)=>a.name.localeCompare(b.name));
+  if (sort === 'price-low') list.sort((a,b)=>a.price-b.price);
+  if (sort === 'price-high') list.sort((a,b)=>b.price-a.price);
+  document.getElementById('resultsCount').textContent = `Showing ${list.length} products`;
+  if (!list.length){
+    grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products found</div><div class="empty-text">Try adjusting your filters or search terms.</div></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => `
+    <div class="product-card">
+      <div class="product-img">${p.image ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : '📦'}</div>
+      <div class="product-body">
+        <div class="product-price">PKR ${p.price.toLocaleString()}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="sold-by">Sold by: <strong>My Store</strong> · <span class="badge-verified">✅ Verified Seller</span></div>
+        <div class="product-moq">${p.stock_status === 'available' ? 'In Stock' : 'Out of Stock'}</div>
+        <button class="btn-inquiry" onclick='openOrder(${JSON.stringify(p).replace(/'/g,"&#39;")})' ${p.stock_status !== 'available' ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''}>Buy Now</button>
+      </div>
+    </div>
+  `).join('');
+  setTimeout(()=>{
+    grid.querySelectorAll('.product-card').forEach((c,i)=>{
+      c.style.opacity='0'; c.style.transform='translateY(14px)';
+      c.style.transition=`opacity .3s ease ${i*.05}s, transform .3s ease ${i*.05}s`;
+      setTimeout(()=>{ c.style.opacity='1'; c.style.transform='translateY(0)'; }, 20+i*50);
+    });
+  },10);
+}
+
+function changeQty(delta){
+  const input = document.getElementById('ordQty');
+  let v = Math.max(1, (parseInt(input.value)||1) + delta);
+  input.value = v;
+  updateOrderTotal();
+}
+function updateOrderTotal(){
+  if (!currentProduct) return;
+  const qty = Math.max(1, parseInt(document.getElementById('ordQty').value)||1);
+  document.getElementById('ordTotal').textContent = `PKR ${(currentProduct.price*qty).toLocaleString()}`;
+}
+function openOrder(product){
+  currentProduct = product;
+  document.getElementById('ordProductName').textContent = product.name;
+  document.getElementById('ordQty').value = 1;
+  updateOrderTotal();
+  const session = typeof Auth !== 'undefined' ? Auth.getSession() : null;
+  if (session){
+    document.getElementById('ordName').value = session.name || '';
+    document.getElementById('ordEmail').value = session.email || '';
+    document.getElementById('ordPhone').value = session.phone || '';
+  }
+  document.getElementById('orderModal').classList.add('show');
+}
+function closeOrder(){ document.getElementById('orderModal').classList.remove('show'); }
+
 async function submitOrder(){
- if(!selected)return; const btn=document.getElementById('placeOrderBtn');
- const payload={customer_name:orderName.value.trim(),phone:orderPhone.value.trim(),email:orderEmail.value.trim()||null,city:orderCity.value.trim(),address:orderAddress.value.trim(),product_id:selected.id,quantity:Number(orderQty.value||1),notes:orderNotes.value.trim()};
- if(!payload.customer_name||!payload.phone||!payload.city||!payload.address||payload.quantity<1)return showToast('Please complete all required fields.','error');
- if(!validPhone(payload.phone))return showToast('Enter a valid phone number.','error');
- if(payload.quantity>selected.stock)return showToast(`Only ${selected.stock} items are available.`,'error');
- try{btn.disabled=true;btn.textContent='Saving order…';const data=await Orders.create(payload); savedWhatsapp=data.whatsapp_url; closeOrder(); successText.innerHTML=`Your order <strong>${data.order.order_id}</strong> has been saved. WhatsApp will open with your order details.`; document.getElementById('successModal').classList.add('show'); setTimeout(()=>{ if(savedWhatsapp) window.location.href=savedWhatsapp; },900); await loadProducts();}catch(e){showToast(e.message,'error');}finally{btn.disabled=false;btn.textContent='Place Order Securely';}
+  const name = document.getElementById('ordName').value.trim();
+  const phone = document.getElementById('ordPhone').value.trim();
+  const email = document.getElementById('ordEmail').value.trim();
+  const address = document.getElementById('ordAddress').value.trim();
+  const city = document.getElementById('ordCity').value.trim();
+  const notes = document.getElementById('ordNotes').value.trim();
+  const qty = Math.max(1, parseInt(document.getElementById('ordQty').value)||1);
+
+  if (!name || !phone || !address || !city){
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('ordSubmitBtn');
+  btn.textContent = 'Placing order…'; btn.disabled = true;
+  try {
+    const order = await Orders.create({
+      product_id: currentProduct.id,
+      quantity: qty,
+      customer_name: name,
+      phone,
+      email: email || null,
+      address,
+      city,
+      notes: notes || null,
+    });
+    closeOrder();
+    showToast(`Order ${order.order_number} placed! Redirecting to WhatsApp…`, 'success');
+    setTimeout(() => { window.open(buildWhatsAppOrderUrl(order), '_blank'); }, 900);
+  } catch(err){
+    showToast(err.message || 'Could not place order.', 'error');
+  } finally {
+    btn.textContent = 'Place Order'; btn.disabled = false;
+  }
 }
-document.addEventListener('DOMContentLoaded',async()=>{const params=new URLSearchParams(location.search);const q=params.get('search');const cat=params.get('cat');if(q)searchFilter.value=q;await loadCategories(); if(cat)catFilter.value=cat; await loadProducts(); ['orderModal','detailsModal','successModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)e.currentTarget.classList.remove('show');}));});
-</script><script src="../js/nav.js"></script></body></html>
+
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) document.getElementById('searchFilter').value = q;
+  loadCategories().then(loadProducts);
+  document.getElementById('orderModal').addEventListener('click', function(e){ if (e.target===this) closeOrder(); });
+});
+</script>
+<script src="../js/nav.js"></script>
+</body>
+</html>
