@@ -1,1 +1,149 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>My Orders — My Store</title><link rel="stylesheet" href="../css/main.css"></head><body><nav class="navbar"><div class="nav-container"><a href="../index.html" class="logo">My<span>Store</span></a><ul class="nav-links"><li><a href="products.html">Products</a></li></ul><div class="nav-actions"><a href="#" class="btn-login" onclick="openModal('login');return false;">Login</a></div></div></nav><div class="page-header"><div class="ph-inner"><h1>My Orders</h1><p>Customer order history.</p></div></div><div class="products-page"><div class="table-card" style="background:white;border-radius:18px;padding:20px"><table class="admin-table" style="width:100%"><thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div><script src="../js/config.js"></script><script src="../js/api.js"></script><script src="../js/shared-auth.js"></script><script>function money(n){return Number(n||0).toLocaleString('en-PK')}document.addEventListener('DOMContentLoaded',async()=>{if(!Auth.getSession()){openModal('login');return;}try{const orders=await Orders.list();ordersBody.innerHTML=orders.map(o=>`<tr><td>${o.order_id}</td><td>${o.product_name}</td><td>${o.quantity}</td><td>PKR ${money(o.total_price)}</td><td>${o.order_status}</td><td>${new Date(o.created_at).toLocaleString()}</td></tr>`).join('')||'<tr><td colspan="6">No orders yet.</td></tr>';}catch(e){showToast(e.message,'error')}})</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Orders — My Store</title>
+<link rel="stylesheet" href="../css/main.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+body{background:var(--gray-50);}
+.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px);}
+.dash-sidebar{background:white;border-right:1px solid var(--gray-200);padding:24px 0;position:sticky;top:68px;height:calc(100vh - 64px);}
+.dash-nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;font-weight:600;font-size:.9rem;cursor:pointer;color:var(--gray-700);border-left:3px solid transparent;transition:all .15s;text-decoration:none;}
+.dash-nav-item:hover{color:var(--green);background:var(--gray-50);}
+.dash-nav-item.active{color:var(--green);border-left-color:var(--green);background:#f0fdf4;}
+.dash-main{padding:32px;}
+.dash-section{display:none;}
+.dash-section.active{display:block;}
+.card{background:white;border-radius:14px;padding:24px;border:1.5px solid var(--gray-200);margin-bottom:20px;}
+.card h3{font-size:1rem;font-weight:800;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;padding:10px 12px;font-size:.8rem;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--gray-200);}
+td{padding:12px;font-size:.875rem;border-bottom:1px solid var(--gray-100);}
+.status-pill{padding:3px 10px;border-radius:100px;font-size:.75rem;font-weight:700;}
+.status-Pending{background:#fef3c7;color:#92400e;}
+.status-Confirmed{background:#dbeafe;color:#1d4ed8;}
+.status-Processing{background:#e0e7ff;color:#4338ca;}
+.status-Shipped{background:#cffafe;color:#0e7490;}
+.status-Delivered{background:#d1fae5;color:#065f46;}
+.status-Cancelled{background:#fee2e2;color:#dc2626;}
+@media(max-width:768px){.dash-layout{grid-template-columns:1fr;}.dash-sidebar{display:none;}}
+</style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<button id="back-to-top" aria-label="Back to top">↑</button>
+<nav class="navbar">
+  <div class="nav-container">
+    <a href="../index.html" class="logo">My<span>Store</span></a>
+    <div style="flex:1"></div>
+    <div class="nav-actions">
+      <span id="buyerNameNav" style="font-weight:600;color:var(--gray-700);font-size:.9rem"></span>
+      <button class="btn-login" onclick="logout()">Logout</button>
+    </div>
+  </div>
+</nav>
+<div class="dash-layout">
+  <aside class="dash-sidebar">
+    <a class="dash-nav-item active" onclick="showSection('overview',this)">🏠 Overview</a>
+    <a class="dash-nav-item" onclick="showSection('orders',this)">📦 My Orders</a>
+    <a class="dash-nav-item" onclick="showSection('profile',this)">👤 Profile</a>
+  </aside>
+  <main class="dash-main">
+    <!-- OVERVIEW -->
+    <div class="dash-section active" id="sec-overview">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:6px">My Account</h2>
+      <p style="color:var(--gray-500);margin-bottom:28px">Welcome back, <strong id="buyerName"></strong>!</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:28px">
+        <div class="card" style="margin-bottom:0;text-align:center"><div style="font-size:2rem;font-weight:900;color:var(--green)" id="ovOrders">0</div><div style="font-size:.8rem;color:var(--gray-500);font-weight:600;margin-top:4px">Total Orders</div></div>
+        <div class="card" style="margin-bottom:0;text-align:center"><div style="font-size:2rem;font-weight:900;color:var(--indigo)" id="ovPending">0</div><div style="font-size:.8rem;color:var(--gray-500);font-weight:600;margin-top:4px">In Progress</div></div>
+      </div>
+      <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="products.html" class="btn-register" style="text-decoration:none">Browse Products</a>
+        </div>
+      </div>
+    </div>
+    <!-- ORDERS -->
+    <div class="dash-section" id="sec-orders">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">My Orders</h2>
+      <div class="card">
+        <table>
+          <thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Total</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody id="ordersTableBody">
+            <tr><td colspan="6" style="color:var(--gray-500);text-align:center;padding:24px">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- PROFILE -->
+    <div class="dash-section" id="sec-profile">
+      <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:24px">My Profile</h2>
+      <div class="card">
+        <div class="form-group"><label>Full Name</label><input type="text" id="pName" disabled></div>
+        <div class="form-group"><label>Email</label><input type="email" id="pEmail" disabled></div>
+        <div class="form-group"><label>Phone</label><input type="tel" id="pPhone" disabled></div>
+        <p style="color:var(--gray-500);font-size:.85rem">Profile editing is coming soon.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast-stack" id="toastStack"></div>
+<script src="../js/config.js"></script>
+<script src="../js/api.js"></script>
+<script>
+function showSection(id,el){
+  document.querySelectorAll(".dash-section").forEach(s=>s.classList.remove("active"));
+  document.querySelectorAll(".dash-nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("sec-"+id).classList.add("active");
+  el.classList.add("active");
+}
+function logout(){ Auth.logout(); }
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-PK', { day:'numeric', month:'short', year:'numeric' });
+}
+
+async function loadOrders(){
+  const tbody = document.getElementById('ordersTableBody');
+  try {
+    const data = await Orders.my();
+    const orders = data.orders || [];
+    document.getElementById('ovOrders').textContent = orders.length;
+    document.getElementById('ovPending').textContent = orders.filter(o => !['Delivered','Cancelled'].includes(o.status)).length;
+    if (!orders.length){
+      tbody.innerHTML = `<tr><td colspan="6" style="color:var(--gray-500);text-align:center;padding:24px">No orders yet. <a href="products.html">Browse products →</a></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = orders.map(o => `
+      <tr>
+        <td><strong>${o.order_number}</strong></td>
+        <td>${o.product_name}</td>
+        <td>${o.quantity}</td>
+        <td>PKR ${o.total_price.toLocaleString()}</td>
+        <td>${fmtDate(o.created_at)}</td>
+        <td><span class="status-pill status-${o.status}">${o.status}</span></td>
+      </tr>
+    `).join('');
+  } catch(err){
+    tbody.innerHTML = `<tr><td colspan="6" style="color:#dc2626;text-align:center;padding:24px">Couldn't load orders: ${err.message}</td></tr>`;
+  }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  const s = Auth.getSession();
+  if(!s){ window.location.href="../index.html"; return; }
+  document.getElementById("buyerName").textContent = s.name;
+  document.getElementById("buyerNameNav").textContent = s.name;
+  document.getElementById("pName").value = s.name || '';
+  document.getElementById("pEmail").value = s.email || '';
+  document.getElementById("pPhone").value = s.phone || '';
+  loadOrders();
+});
+</script>
+<script src="../js/nav.js"></script>
+</body>
+</html>
